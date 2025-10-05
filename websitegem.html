@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceTrash Hack: Kurzgesagt Flat Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ----------------------------------- */
+        /* 1. ROOT COLORS (KURZGESAGT PALETTE) */
+        /* ----------------------------------- */
+        :root {
+            --kz-yellow: #fde424;     
+            --kz-teal: #00796b;       
+            --kz-orange: #ff9800;     
+            --kz-purple: #9c27b0;     
+
+            /* Dark Mode */
+            --bg-primary: #1c1c1c;    
+            --bg-secondary: #222;     
+            --text-color: #f0f0f0;
+            --outline-color: #000;    
+        }
+
+        /* BRIGHT MODE */
+        body.bright-mode {
+            --bg-primary: #ffffff;    
+            --bg-secondary: #f4f4f4;  
+            --text-color: #212121;
+            --outline-color: #555;    
+        }
+        
+        /* ----------------------------------- */
+        /* 2. GLOBALS & LAYOUT & TRANSITIONS   */
+        /* ----------------------------------- */
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Varela Round', sans-serif; margin: 0; padding: 0;
+            background-color: var(--bg-primary); color: var(--text-color); line-height: 1.6;
+            transition: background-color 0.6s, color 0.6s;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        strong { color: var(--kz-yellow); font-weight: 700; } 
+        h1, h2, h3, h4 { 
+            color: var(--kz-teal); 
+            font-weight: 700; 
+            text-shadow: 1px 1px 0 var(--outline-color); 
+            transition: color 0.6s, text-shadow 0.6s;
+        }
+
+        .mode-toggle {
+            /* ... (styles remain the same) ... */
+            transition: all 0.3s; z-index: 1000; 
+            border: 3px solid var(--outline-color);
+        }
+        .mode-toggle:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--kz-yellow); }
+
+        /* ----------------------------------- */
+        /* 3. HERO SECTION (Title Page Image)  */
+        /* ----------------------------------- */
+        @keyframes glow-pulse {
+            0% { box-shadow: 0 0 5px var(--kz-yellow), 0 0 10px var(--kz-yellow); }
+            50% { box-shadow: 0 0 15px var(--kz-yellow), 0 0 30px var(--kz-yellow); }
+            100% { box-shadow: 0 0 5px var(--kz-yellow), 0 0 10px var(--kz-yellow); }
+        }
+
+        .hero-section {
+            position: relative; height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; overflow: hidden;
+            border-bottom: 5px solid var(--kz-yellow);
+            background: radial-gradient(circle at 50% 50%, #202020 0%, #000000 100%);
+            background-color: #0d1a26; 
+        }
+
+        .hero-image { 
+            width: 80%; max-width: 600px; height: auto; margin: 20px 0;
+            border: 8px solid var(--outline-color); 
+            box-shadow: 10px 10px 0 var(--kz-teal); 
+            transition: all 0.5s ease-out;
+            z-index: 10;
+        }
+        .hero-section h1 { margin-bottom: 5px; } 
+        .hero-section h2 { margin-top: 5px; } 
+        .scroll-button:hover { 
+            background: var(--kz-yellow); color: var(--bg-primary); 
+            box-shadow: 7px 7px 0 var(--outline-color); 
+            transform: translate(-2px, -2px) scale(1.05); 
+        }
+
+
+        /* ----------------------------------- */
+        /* 4. PHASE CONTENT & ENHANCED ANIMATION */
+        /* ----------------------------------- */
+        .mission-phase {
+            display: none; 
+            min-height: 80vh; padding-top: 60px;
+            background-color: var(--bg-secondary); 
+            border-bottom: 2px solid var(--kz-teal);
+        }
+        
+        .phase-image { /* New style for images within phase content */
+            width: 100%; max-width: 700px; height: auto; margin: 20px auto; display: block;
+            border: 5px solid var(--outline-color); 
+            box-shadow: 8px 8px 0 var(--kz-purple); /* Purple contrast shadow */
+            transition: all 0.5s ease-out;
+            /* Animation effect for the image, appears with a bounce */
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        
+        .phase-image.visible-block {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* Enhanced Card Animation */
+        .content-block {
+            background-color: var(--bg-primary); 
+            border: 3px solid var(--outline-color); 
+            padding: 25px; margin-bottom: 20px;
+            box-shadow: 5px 5px 0 var(--kz-yellow); 
+            
+            /* ENHANCED CREATIVE ENTRANCE EFFECT */
+            opacity: 0;
+            transform: translateY(25px) rotateZ(-1deg); /* Start slightly rotated and low */
+            transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.1s;
+        }
+        .content-block:hover {
+             box-shadow: 6px 6px 0 var(--kz-purple); 
+        }
+        
+        .visible-block {
+            opacity: 1;
+            transform: translateY(0) rotateZ(0deg); /* End straight and in place */
+        }
+        
+        .content-block ul li::before {
+            content: "➤"; color: var(--kz-yellow); font-weight: bold; 
+            display: inline-block; width: 1.5em; margin-left: -1.5em;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <div class="mode-toggle" id="modeToggle" title="Click to toggle Dark/Bright Mode">
+        <span class="mode-icon">N</span>
+    </div>
+
+    <div id="home-page" class="mission-page-container">
+        <header class="hero-section">
+            <h1>The Trash Problem</h1>
+            
+            <img 
+                src="image_be7809.jpg-25897f2a-6bf1-471b-8bac-e202843ca9b0" 
+                alt="Custom art for Mars waste challenge" 
+                class="hero-image"
+            >
+
+            <h2>Making $pace Matter on Mars</h2>
+            <a href="#solar-nav" class="scroll-button" onclick="document.getElementById('solar-nav').scrollIntoView({behavior: 'smooth'})">VIEW MISSION TIMELINE ➤</a>
+        </header>
+
+        <section id="mission-summary" class="summary-section container">
+            <div class="content-block visible-block" style="transition-delay: 0.1s;">
+                <h3>The 12,600 kg Challenge: Martian Circular Economy</h3>
+                <p>During a hypothetical three-year mission to Mars and back, an eight-person crew would accumulate **12,600 kg** of inorganic waste, including packaging, textiles, and structural materials. This scenario creates a pressing need to recycle available materials, rather than execute the expensive and inefficient processes of transporting additional resources from Earth.</p>
+                <p>Our challenge is to design sustainable systems that manage, reuse, or recycle this inorganic waste, turning trash into valuable resources like **3D printer filament**, **radiation shielding tiles**, and **habitat composites**, preparing humanity for future exploration of unknown worlds.</p>
+            </div>
+        </section>
+    </div>
+    
+    <div id="solar-nav" class="solar-nav-wrapper">
+        <div class="solar-system">
+            <div class="orbit-line"></div>
+            
+            <div class="planet-node p0" onclick="showPhase('phase-0')">
+                <span class="phase-id">P0</span>
+                <span class="phase-label">Arrival & Setup</span>
+            </div>
+
+            <div class="planet-node p1" onclick="showPhase('phase-1')">
+                <span class="phase-id">P1</span>
+                <span class="phase-label">Early Ops</span>
+            </div>
+
+            <div class="planet-node p2" onclick="showPhase('phase-2')">
+                <span class="phase-id">P2</span>
+                <span class="phase-label">Normal Ops</span>
+            </div>
+
+            <div class="planet-node p3" onclick="showPhase('phase-3')">
+                <span class="phase-id">P3</span>
+                <span class="phase-label">Celebration</span>
+            </div>
+
+            <div class="planet-node p4" onclick="showPhase('phase-4')">
+                <span class="phase-id">P4</span>
+                <span class="phase-label">Discovery</span>
+            </div>
+
+            <div class="planet-node p5" onclick="showPhase('phase-5')">
+                <span class="phase-id">P5</span>
+                <span class="phase-label">Final Year</span>
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="main-content-area">
+        
+        <section id="phase-0" class="mission-phase">
+            <div class="container">
+                <div class="phase-header content-block">
+                    <h3>Phase 0: Arrival and Inflatable Habitat Setup (Months 0–1)</h3>
+                    <p>Crew lands on Mars; habitat setup is critical. Waste management systems arrive two days later, so initial waste handling is limited.</p>
+                </div>
+                
+                <img 
+                    src="files_6646643-1759635663873-image.jpg-eb93192f-428e-40b2-a651-093eb2ed4553" 
+                    alt="Phase 0: Arrival and Setup" 
+                    class="phase-image"
+                >
+
+                <div class="content-block">
+                    <h4>Activities Generating Waste</h4>
+                    <ul>
+                        <li>Landing & Unpacking: Foam packaging, bubble wrap, air cushions, protective wraps around habitat/cube frame.</li>
+                        <li>Habitat Setup: Scraps of foam, plastic, metal clips from adjustments.</li>
+                        <li>Temporary Work Area: Protective coverings and gloves used for handling equipment.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h4>Waste Types & Processing / Temporary Use</h4>
+                    <ul>
+                        <li>Foam Packaging: Reuse as temporary padding, insulation, storage bins, or small structural supports.</li>
+                        <li>3-D Cube Frame: Reused after inflation as a temporary support structure for instruments or workstations.</li>
+                        <li>Plastic Wrapping / Tarps: Reuse as dust shields, temporary floor lining, or protective covers.</li>
+                        <li>Cardboard / Rocket Packaging: Flatten and store for temporary insulation or makeshift tables.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block key-principles-block">
+                    <h4>Key Processing Principles</h4>
+                    <p>No active recycling unit yet – all waste must be temporarily stored or **creatively reused**.</p>
+                    <p>Examples: Foam & bubble wrap $\rightarrow$ insulation; 3-D cube frame $\rightarrow$ experimental structures. **Minimal waste exposure** and **temporary containment** are critical.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="phase-1" class="mission-phase">
+            <div class="container">
+                <div class="phase-header content-block">
+                    <h3>Phase 1: Early Surface Operations (Months 1–4)</h3>
+                    <p>Crew settles in; waste management systems (TCPS compactor, basic sterilizer) are partially online. Focus shifts to daily crew activity waste.</p>
+                </div>
+                
+                <div class="phase-image content-block" style="height: 150px; background-color: var(--kz-teal); border: 5px solid var(--outline-color); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-weight: bold; font-size: 1.5em; box-shadow: 8px 8px 0 var(--kz-purple);">
+                    [ Placeholder for Phase 1 Image ]
+                </div>
+                <div class="content-block">
+                    <h4>Activities Generating Waste</h4>
+                    <ul>
+                        <li>Habitat Operations: Daily use of clothing, towels, hygiene wipes; office supplies.</li>
+                        <li>Food & Consumables: Daily meals generate multilayer packaging, drink pouches.</li>
+                        <li>Waste System Startup: Filters and wipes from testing water/air recovery systems; protective gloves.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h4>Waste Types & Processing / Temporary Use</h4>
+                    <ul>
+                        <li>Clothing / Textiles: Sterilize $\rightarrow$ cut/patch into straps, rags, insulation; shred for composites.</li>
+                        <li>Paper & Office Supplies: Reuse as notes; shred to wipes/fiberboard; compact in TCPS tiles.</li>
+                        <li>Food Packaging: Wash/sterilize $\rightarrow$ sort clean plastics for **Refabricator filament**; compact contaminated films into **TCPS tiles**.</li>
+                        <li>EVA Expendables: Dedust $\rightarrow$ reuse polymeric parts; compact worn/contaminated in **TCPS**.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block key-principles-block">
+                    <h4>Key Processing Principles</h4>
+                    <p>Early emphasis on reuse & sterilization (textiles, wipes). Volume management via TCPS (foams, packaging $\rightarrow$ tiles for shielding). Sorting priority (Clean polymers $\rightarrow$ Refabricator; dirty $\rightarrow$ compaction).</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="phase-2" class="mission-phase">
+            <div class="container">
+                <div class="phase-header content-block">
+                    <h3>Phase 2: Normal Operations (Months 4–19)</h3>
+                    <p>The **full waste management system** (TCPS, sterilizer, Refabricator, limited pyrolysis) is operational. Sustainability focus: maximize recycling efficiency.</p>
+                </div>
+                
+                <div class="phase-image content-block" style="height: 150px; background-color: var(--kz-orange); border: 5px solid var(--outline-color); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-weight: bold; font-size: 1.5em; box-shadow: 8px 8px 0 var(--kz-teal);">
+                    [ Placeholder for Phase 2 Image ]
+                </div>
+                <div class="content-block">
+                    <h4>Activities Generating Waste</h4>
+                    <ul>
+                        <li>Scientific & Maintenance: Lab experiments (packaging, plastics, glass), repairs (fasteners, composite scraps).</li>
+                        <li>Crew Life: Daily food consumption, clothing/wipes cycling out.</li>
+                        <li>EVA Operations: Regular sorties generate used glove liners, dust covers, regolith-contaminated waste.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h4>Waste Types & Processing / Reuse</h4>
+                    <ul>
+                        <li>Food Packaging: Clean plastics $\rightarrow$ **Filament**; multilayer/contaminated $\rightarrow$ **TCPS tiles** or **pyrolysis** for gas/fuel.</li>
+                        <li>Aluminum / Composites: Salvaged. Aluminum is fed to **induction melting**; composite scraps embedded in **regolith–polymer panels**.</li>
+                        <li>EVA Gloves & Expendables: Dedust $\rightarrow$ sterilize/reuse; compact regolith-contaminated in **TCPS**.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block key-principles-block">
+                    <h4>Key Processing Principles</h4>
+                    <p>Closed-loop recycling baseline for polymer, textile, metal. **TCPS tiles** serve dual roles (waste stabilization & construction). **Material Reclamation** (metals, clean polymers) for **Additive Manufacturing (AM)**.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="phase-3" class="mission-phase">
+            <div class="container">
+                <div class="phase-header content-block">
+                    <h3>Phase 3: Birthday Celebration (Month 20)</h3>
+                    <p>Objective: boost morale while demonstrating the versatility and sustainability of the habitat recycling system using only existing materials.</p>
+                </div>
+                
+                <div class="phase-image content-block" style="height: 150px; background-color: var(--kz-purple); border: 5px solid var(--outline-color); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-weight: bold; font-size: 1.5em; box-shadow: 8px 8px 0 var(--kz-orange);">
+                    [ Placeholder for Phase 3 Image ]
+                </div>
+                <div class="content-block">
+                    <h4>Activities Generating Waste (Post-Celebration)</h4>
+                    <ul>
+                        <li>Decoration Preparation: Clothing/washcloths cut for decorations, plastic wraps/pouches for hats/banners, food packaging for containers/confetti.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h4>Waste Types & Processing / Reuse</h4>
+                    <ul>
+                        <li>Clothing / Washcloths: Repurposed as streamers/décor; post-event, shredded into cleaning rags or insulation.</li>
+                        <li>Plastic Wraps / Thermal Pouches: Shaped into party hats/banners; post-event scraps fed into **TCPS** or used as padding.</li>
+                        <li>Food Packaging: Cleaned and recycled into storage containers, insulation mats, or filament via **Refabricator**.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block key-principles-block">
+                    <h4>Key Processing Principles</h4>
+                    <p>Full repurposing priority: Every decoration element originates from already-used material. Temporary functional use followed by immediate reintegration. **Minimal additional waste** generated.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="phase-4" class="mission-phase">
+            <div class="container">
+                <div class="phase-header content-block">
+                    <h3>Phase 4: Scientific Discovery (Month 23)</h3>
+                    <p>Crew conducts CO₂-to-oxygen conversion experiments. Objective: maximize reuse of experimental waste and integrate byproducts into habitat operations.</p>
+                </div>
+                
+                <div class="phase-image content-block" style="height: 150px; background-color: #00bcd4; border: 5px solid var(--outline-color); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-weight: bold; font-size: 1.5em; box-shadow: 8px 8px 0 var(--kz-yellow);">
+                    [ Placeholder for Phase 4 Image ]
+                </div>
+                <div class="content-block">
+                    <h4>Activities Generating Waste</h4>
+                    <ul>
+                        <li>Experiment Operations: EVA tasks for CO₂-to-O₂ units, manipulation of apparatus (filters, mesh, carbon collection), sample collection.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h4>Waste Types & Processing / Reuse</h4>
+                    <ul>
+                        <li>Surplus Carbon: Byproduct of CO₂-to-O₂ conversion. Used for **soil enrichment**, **thermal insulation**, or **regolith-polymer composite printing filler**.</li>
+                        <li>EVA Gloves & Protective Equipment: Sterilized for reuse; degraded $\rightarrow$ shredded for **composite filler**.</li>
+                        <li>Filters / Lab Tools: Cleaned, regenerated, or repurposed; damaged items disassembled for components.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block key-principles-block">
+                    <h4>Key Processing Principles</h4>
+                    <p>Maximize experimental byproduct reuse (Surplus Carbon). Sterilization first for EVA gloves, fabrics, instruments. **Closed-loop integration** of experimental waste into habitat systems.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="phase-5" class="mission-phase">
+            <div class="container">
+                <div class="phase-header content-block">
+                    <h3>Phase 5: Routine Operations and Final Year (Months 24–36)</h3>
+                    <p>Maintain sustainable operations, process waste efficiently, and prepare for **end-of-mission deconstruction**.</p>
+                </div>
+                
+                <div class="phase-image content-block" style="height: 150px; background-color: #d32f2f; border: 5px solid var(--outline-color); display: flex; align-items: center; justify-content: center; color: var(--text-color); font-weight: bold; font-size: 1.5em; box-shadow: 8px 8px 0 var(--kz-teal);">
+                    [ Placeholder for Phase 5 Image ]
+                </div>
+                <div class="content-block">
+                    <h4>Activities Generating Waste</h4>
+                    <ul>
+                        <li>Routine Operations: Daily meals, cleaning, experiments generate food packaging, fabrics, hygiene items.</li>
+                        <li>End-of-Mission Preparations (Month 36): Dismantling habitat modules; sorting, compacting, preparing materials for transport or future mission reuse.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h4>Waste Types & Processing / Reuse</h4>
+                    <ul>
+                        <li>Food Packaging: Shredded and pressed into storage containers/insulation mats; high-volume packaging $\rightarrow$ **thermal processing (TtSG)** for energy.</li>
+                        <li>Aluminum / Composites: Sorted, compacted, salvaged for reuse or **AM feedstock**; metals processed via **induction foundry**.</li>
+                        <li>Site Cleanliness: Foam and bubble wrap are either transported, compacted, or repurposed. Mars site is left clear.</li>
+                    </ul>
+                </div>
+
+                <div class="content-block key-principles-block">
+                    <h4>Key Processing Principles</h4>
+                    <p>Closed-loop management continues. **Material prioritization:** High-value materials reclaimed first. **End-of-mission preparation:** All remaining materials sorted for transport, storage, or reuse in subsequent missions.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. DARK/BRIGHT MODE TOGGLE ---
+            const toggleButton = document.getElementById('modeToggle');
+            const body = document.body;
+
+            function toggleMode() {
+                body.classList.toggle('bright-mode');
+                const isBright = body.classList.contains('bright-mode');
+                localStorage.setItem('modePreference', isBright ? 'bright' : 'dark');
+            }
+
+            const savedMode = localStorage.getItem('modePreference');
+            if (savedMode === 'bright') {
+                body.classList.add('bright-mode');
+            } else {
+                body.classList.remove('bright-mode');
+            }
+            toggleButton.addEventListener('click', toggleMode);
+            
+            // --- 2. PHASE NAVIGATION (PAGE SWAPPING & ANIMATION) ---
+            const missionPages = document.querySelectorAll('.mission-phase');
+            const homePage = document.getElementById('home-page');
+            const mainContentArea = document.getElementById('main-content-area');
+            
+            function animateBlocks(phaseId) {
+                const targetPhase = document.getElementById(phaseId);
+                // Select ALL blocks, including the header and image block
+                const blocks = targetPhase.querySelectorAll('.content-block, .phase-image');
+                
+                // 1. Remove visible class from all blocks on ALL pages (important for re-animating)
+                document.querySelectorAll('.content-block, .phase-image').forEach(block => {
+                    block.classList.remove('visible-block');
+                });
+
+                // 2. Add visible class sequentially for the target phase
+                blocks.forEach((block, index) => {
+                    // Start animation cascade slightly after click (100ms)
+                    setTimeout(() => {
+                        block.classList.add('visible-block');
+                    }, index * 150 + 100); // Increased delay to 150ms for a more noticeable cascade
+                });
+            }
+
+            window.showPhase = function(phaseId) {
+                homePage.style.display = 'none';
+                mainContentArea.style.display = 'block';
+                
+                missionPages.forEach(page => {
+                    page.style.display = 'none';
+                });
+
+                const targetPhase = document.getElementById(phaseId);
+                if (targetPhase) {
+                    targetPhase.style.display = 'block';
+                    animateBlocks(phaseId); // Trigger the block animation
+                    targetPhase.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+            
+            // Initial animation for home page blocks (manual trigger)
+            document.querySelectorAll('#mission-summary .content-block').forEach(block => {
+                 block.classList.add('visible-block');
+            });
+
+
+            // --- 3. SCROLLING ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href.length > 1 && href !== '#solar-nav') {
+                        e.preventDefault();
+                        document.querySelector(href).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
